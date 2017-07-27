@@ -16,26 +16,55 @@
 
 'use strict';
 
+const WatsonConversationSetup = require('./lib/watson-conversation-setup');
+const DEFAULT_NAME = 'watson-conversation-slots-intro';
+const fs = require('fs'); // file system for loading JSON
+const conversationCredentials = vcapServices.getCredentials('conversation');
+const vcapServices = require('vcap_services');
+
 var express = require('express'); // app server
 var bodyParser = require('body-parser'); // parser for post requests
 var Conversation = require('watson-developer-cloud/conversation/v1'); // watson sdk
 
 var app = express();
 
+require('cf-deployment-tracker-client').track();
+
 // Bootstrap application settings
 app.use(express.static('./public')); // load UI from public folder
 app.use(bodyParser.json());
 
+let workspaceID; // workspaceID will be set when the workspace is created or validated.
+const conversationSetup = new WatsonConversationSetup(conversation);
+const workspaceJson = JSON.parse(fs.readFileSync('data/watson-pizzeria.json'));
+const conversationSetupParams = { default_name: DEFAULT_NAME, workspace_json: workspaceJson };
+conversationSetup.setupConversationWorkspace(conversationSetupParams, (err, data) => {
+  if (err) {
+    handleSetupError(err);
+  } else {
+    console.log('Conversation is ready!');
+    workspaceID = data;
+  }
+});
+
 // Create the service wrapper
-var conversation = new Conversation({
+//not commented var conversation = new Conversation({
   // If unspecified here, the CONVERSATION_USERNAME and CONVERSATION_PASSWORD env properties will be checked
   // After that, the SDK will fall back to the bluemix-provided VCAP_SERVICES environment property
   // username: '<username>',
   // password: '<password>',
   // url: 'https://gateway.watsonplatform.net/conversation/api',
-  version_date: Conversation.VERSION_DATE_2017_04_21
-});
+  //notcommversion_date: Conversation.VERSION_DATE_2017_04_21
+//notComm});
 
+// Create the service wrapper
+const conversation = watson.conversation({
+  url: 'https://gateway.watsonplatform.net/conversation/api',
+  username: conversationCredentials.username,
+  password: conversationCredentials.password,
+  version_date: '2016-07-11',
+  version: 'v1'
+});
 // Endpoint to be call from the client side
 app.post('/api/message', function(req, res) {
   var workspace = process.env.WORKSPACE_ID || '<workspace-id>';
