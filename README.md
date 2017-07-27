@@ -36,8 +36,7 @@ Coming Soon!
 **NOTE:** Perform steps 1-5 **OR** click the ``Deploy to Bluemix`` button and hit ``Create`` and then jump to step 5.
 
 
-[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/scottdangelo/watson-conversation-slots-intro #required)
-
+[![Deploy to Bluemix](https://deployment-tracker.mybluemix.net/stats/3999122db8b59f04eecad8d229814d83/button.svg)](https://bluemix.net/deploy?repository=https://github.com/scottdangelo/watson-conversation-slots-intro)
 
 1. [Clone the repo](#1-clone-the-repo)
 2. [Create Bluemix services](#2-create-bluemix-services)
