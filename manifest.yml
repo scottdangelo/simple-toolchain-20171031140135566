@@ -9,5 +9,7 @@ applications:
   path: .
   memory: 256M
   instances: 1
+  services:
+   - wcsi-conversation-service
   env:
     NPM_CONFIG_PRODUCTION: false
