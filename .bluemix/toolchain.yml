@@ -1,0 +1,10 @@
+version: '2'
+services:
+  sample-repo:
+    service_id: githubpublic
+    parameters:
+      repo_name: '{{toolchain.name}}'
+      repo_url: 'https://github.com/scottdangelo/watson-conversation-slots-intro'
+      type: clone
+      has_issues: true
+      enable_traceability: true
