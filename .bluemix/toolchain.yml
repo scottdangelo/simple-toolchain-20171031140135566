@@ -1,4 +1,26 @@
 version: '2'
+messages:
+  $i18n: locales.yml
+template:
+  name:
+    $ref: "#/messages/template.name"
+  description:
+    $ref: "#/messages/template.description"
+  header: '![](toolchain.svg?localize)'
+  icon: icon.svg
+  required:
+    - sample-build
+    - sample-repo
+  info:
+    git url: >-
+      [https://github.com/scottdangelo/watson-conversation-slots-intro](https://github.com/scottdangelo/watson-conversation-slots-intro)
+    git branch: >-
+      [master](https://github.com/scottdangelo/watson-conversation-slots-intro)
+toolchain:
+  name: 'simple-toolchain-{{timestamp}}'
+  template:
+    getting_started:
+      $ref: "#/messages/template.gettingStarted"
 services:
   sample-repo:
     service_id: githubpublic
@@ -8,3 +30,28 @@ services:
       type: clone
       has_issues: true
       enable_traceability: true
+  sample-build:
+    service_id: pipeline
+    parameters:
+      services:
+        - sample-repo
+      name: '{{services.sample-repo.parameters.repo_name}}'
+      ui-pipeline: true
+      configuration:
+        content:
+          $text: pipeline.yml
+        env:
+          SAMPLE_REPO: sample-repo
+          CF_APP_NAME: '{{form.pipeline.parameters.prod-app-name}}'
+          PROD_SPACE_NAME: '{{form.pipeline.parameters.prod-space}}'
+          PROD_ORG_NAME: '{{form.pipeline.parameters.prod-organization}}'
+          PROD_REGION_ID: '{{form.pipeline.parameters.prod-region}}'
+        execute: true
+  webide:
+    service_id: orion
+form:
+  pipeline:
+    parameters:
+      prod-app-name: '{{services.sample-repo.parameters.repo_name}}'
+    schema:
+      $ref: deploy.json
